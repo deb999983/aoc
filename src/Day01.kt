@@ -10,17 +10,6 @@ fun main() {
         "eight" to "8",
         "nine" to "9",
     )
-    val numToWord = mapOf(
-        "1" to "one",
-        "2" to "two",
-        "3" to "three",
-        "4" to "four",
-        "5" to "five",
-        "6" to "six",
-        "7" to "seven",
-        "8" to "eight",
-        "9" to "nine",
-    )
 
     fun part1(input: List<String>): Int {
         return input.map { it.filter { it.isDigit() } }.map { (it.first().toString() + it.last().toString()).toInt() }.sum()
@@ -28,19 +17,11 @@ fun main() {
 
     fun part2(input: List<String>): Int {
         val intArray = input.map {
-            val wordNumFirst = wordToNum.keys.map { w -> it.indexOf(w) to wordToNum[w]!! }.filter { it.first != -1 }.sortedBy { it.first }.firstOrNull()
-            val wordNumLast = wordNumFirst?.let { wf ->
-                wordToNum.keys.map { w ->
-                    val offset = wf.first + numToWord[wf.second]!!.length
-                    val li = it.substring(offset).indexOf(w)
-                    if(li != -1) (li + offset) to wordToNum[w] else li to wordToNum[w]
-                }.filter {
-                    it.first != -1
-                }.sortedBy { it.first }.lastOrNull()
-            }
+            val firstWord = wordToNum.keys.map { w -> it.indexOf(w) to wordToNum[w]!! }.filter { it.first != -1 }.minByOrNull { it.first }
+            val secondWord = wordToNum.keys.map { w -> it.lastIndexOfAny(listOf(w)) to wordToNum[w]!! }.filter { it.first != -1 }.maxByOrNull { it.first }
 
             val indexMap = (
-                listOf(wordNumFirst, wordNumLast).filterNotNull() +
+                listOf(firstWord, secondWord).filterNotNull() +
                     listOf(it.indexOfFirst { it.isDigit() }, it.indexOfLast { it.isDigit() }).filter { it != -1 }.map { i -> i to it[i].toString() }
                 ).toMap()
 
@@ -53,12 +34,12 @@ fun main() {
 
     // test if implementation meets criteria from the description, like:
     val testInput = readInput("Day01_test")
-//    check(part1(testInput) == 421)
-    check(part2(testInput) == 342)
+    check(part1(testInput) == 421)
+    check(part2(testInput) == 317)
 
     val input = readInput("Day01")
-//    part1(input).println()
-//    part2(input).println()
+    part1(input).println()
+    part2(input).println()
 }
 
 /*
