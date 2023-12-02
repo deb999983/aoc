@@ -17,16 +17,19 @@ fun main() {
 
     fun part2(input: List<String>): Int {
         val intArray = input.map {
-            val firstWord = wordToNum.keys.map { w -> it.indexOf(w) to wordToNum[w]!! }.filter { it.first != -1 }.minByOrNull { it.first }
-            val secondWord = wordToNum.keys.map { w -> it.lastIndexOfAny(listOf(w)) to wordToNum[w]!! }.filter { it.first != -1 }.maxByOrNull { it.first }
 
-            val indexMap = (
-                listOf(firstWord, secondWord).filterNotNull() +
-                    listOf(it.indexOfFirst { it.isDigit() }, it.indexOfLast { it.isDigit() }).filter { it != -1 }.map { i -> i to it[i].toString() }
-                ).toMap()
+            val wordNumToIndexes = listOf(
+                wordToNum.keys.map { w -> it.indexOf(w) to wordToNum[w]!! }.filter { it.first != -1 }.minByOrNull { it.first }, // FirstWordIndex
+                wordToNum.keys.map { w -> it.lastIndexOfAny(listOf(w)) to wordToNum[w]!! }.filter { it.first != -1 }.maxByOrNull { it.first }, // LastWordIndex
+            ).filter { it != null }
 
-            val indexes = indexMap.keys.sorted()
-            indexMap[indexes.first()]!! + indexMap[indexes.last()]!!
+            val digitNumToIndexes = listOf(
+                it.indexOfFirst { it.isDigit() },
+                it.indexOfLast { it.isDigit() },
+            ).filter { it != -1 }.map { i -> i to it[i] }
+
+            val indexes = (wordNumToIndexes + digitNumToIndexes).sortedBy { it!!.first }
+            "${indexes.first()!!.second}${indexes.last()!!.second}"
         }.map { it.toInt() }
         println(intArray.mapIndexed { i, e -> "${i + 1}: ${input[i]} => $e" }.joinToString("\n"))
         return intArray.sum()
@@ -41,14 +44,3 @@ fun main() {
     part1(input).println()
     part2(input).println()
 }
-
-/*
-
-two1nine
-eightwothree
-abcone2threexyz
-xtwone3four
-nineightseven2
-zoneight234
-7pqrstsixteen
- */
