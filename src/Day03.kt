@@ -40,7 +40,6 @@ data class EngineSchema(val data: List<List<Char>>, val W: Int, val H: Int) {
 	}
 
 	private fun gearsFromPart(parts: List<Part>): List<Gear> {
-		val gears = mutableListOf<Gear>()
 		val gMap = mutableMapOf<Pair<Int, Int>, MutableList<Part>>()
 		for (part in parts) {
 			part.neighbours.filter { it.second == '*' }.forEach {
